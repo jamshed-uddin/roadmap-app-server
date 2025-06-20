@@ -17,6 +17,8 @@ const loginUser = async (req, res, next) => {
       throw customError(401, error.message);
     }
 
+    console.log(req.body, userCredentials);
+
     const user = await Users.findOne({ email: userCredentials.email });
 
     if (user && (await user.matchPassword(userCredentials.password))) {
@@ -31,6 +33,7 @@ const loginUser = async (req, res, next) => {
     } else {
       throw customError(400, "Invalid credentials");
     }
+    res.send({ message: "done" });
   } catch (error) {
     next(error);
   }

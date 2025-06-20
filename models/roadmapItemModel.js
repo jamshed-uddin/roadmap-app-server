@@ -16,6 +16,10 @@ const RoadmapItemSchema = new mongoose.Schema(
       enum: ["topic", "subtopic"],
       default: "topic",
     },
+    roadmapId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, "Item's roadmap id is required"],
+    },
     subtopicTo: {
       type: mongoose.Schema.Types.ObjectId,
       default: null,
