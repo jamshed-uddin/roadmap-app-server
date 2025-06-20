@@ -1,14 +1,12 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const userRouter = require("./routes/userRoutes");
 const dotenv = require("dotenv");
 const connectdb = require("./config/connectdb");
+const userRoutes = require("./routes/userRoutes");
+const roadmapRoutes = require("./routes/roadmapRoutes");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 dotenv.config();
-const RoadmapItems = require("./models/roadmapItemModel");
-const Roadmap = require("./models/roadmapModel");
-const { default: mongoose } = require("mongoose");
 
 const PORT = process.env.PORT || 5000;
 connectdb();
@@ -23,6 +21,9 @@ app.use(
 app.get("/", (req, res) => {
   res.send({ message: "Server is running" });
 });
+
+app.use("/api/users", userRoutes);
+app.use("/api/roadmaps", roadmapRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
