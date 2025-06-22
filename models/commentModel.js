@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema(
   {
-    item: {
+    itemId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Commented item id is required"],
     },
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Commentator user id is required"],
     },

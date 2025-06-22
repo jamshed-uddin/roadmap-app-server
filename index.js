@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 const connectdb = require("./config/connectdb");
 const userRoutes = require("./routes/userRoutes");
 const roadmapRoutes = require("./routes/roadmapRoutes");
+const roadmapItemRoutes = require("./routes/roadmapItemRoutes");
+const upvoteRoutes = require("./routes/upvoteRoutes");
+
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 dotenv.config();
 
@@ -24,6 +27,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/roadmaps", roadmapRoutes);
+app.use("/api/roadmapitems", roadmapItemRoutes);
+app.use("/api/upvotes", upvoteRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

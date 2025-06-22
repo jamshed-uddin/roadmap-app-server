@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const upvoteSchema = new mongoose.Schema(
   {
-    upvoteTo: {
+    itemId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Upvoted item id is required"],
     },
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Upvoter user id is required"],
       ref: "Users",
