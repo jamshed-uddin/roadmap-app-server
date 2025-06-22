@@ -6,6 +6,8 @@ const saveUpvote = async (req, res, next) => {
     const userId = req.user?._id;
     const { itemId } = req.body;
 
+    console.log(req.user);
+
     if (!itemId) {
       throw customError(400, "Item id is requried");
     }
@@ -20,7 +22,7 @@ const saveUpvote = async (req, res, next) => {
 
 const getUpvotes = async (req, res, next) => {
   try {
-    const itemId = req.query.item;
+    const itemId = req.query.itemId;
     const userId = req.user?._id;
     if (!itemId) {
       throw customError(400, "Item id is required");
@@ -39,8 +41,9 @@ const getUpvotes = async (req, res, next) => {
 const deleteUpvotes = async (req, res, next) => {
   try {
     const userId = req.user?._id;
-    const { itemId } = req.params;
-    await Upvotes.deleteOne({ userId: userId, itemId: itemId });
+    const { id } = req.params;
+
+    await Upvotes.deleteOne({ userId: userId, itemId: id });
     res.status(200).send({ message: "Upvote removed" });
   } catch (error) {
     next(error);
