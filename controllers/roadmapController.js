@@ -45,7 +45,7 @@ const getSingleRoadmap = async (req, res, next) => {
 
       roamdapItemsArr.forEach((item) => {
         if (item.subtopicTo && itemMap[item.subtopicTo]) {
-          itemMap[item.subtopicTo].items.push(item);
+          itemMap[item.subtopicTo].items.push(itemMap[item._id]);
         } else {
           tree.push(itemMap[item._id]);
         }
