@@ -8,7 +8,7 @@ const getRoadmaps = async (req, res, next) => {
     const { popular, status } = req.query;
 
     // if(userId && status){
-
+    //todo: filter by status
     // }
 
     const sort = {};
