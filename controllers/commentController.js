@@ -27,8 +27,6 @@ const getComments = async (req, res, next) => {
       .populate("userId", "name")
       .lean();
 
-    console.log(comments);
-
     const createCommentTree = (commentsFlatArr) => {
       const commentMap = new Map();
       const tree = [];
@@ -43,8 +41,7 @@ const getComments = async (req, res, next) => {
           tree.push(commentMap[comment._id]);
         }
       });
-      //   console.log(tree);
-      console.log(commentMap);
+
       return tree;
     };
 
@@ -64,7 +61,7 @@ const updateComment = async (req, res, next) => {
     if (!content) {
       throw customError(400, "Content is required");
     }
-    if (userId !== req.user?._id) {
+    if (userId !== req.user?._id.toString()) {
       throw customError(400, "Failed to update comment");
     }
 
@@ -83,9 +80,44 @@ const updateComment = async (req, res, next) => {
 const deleteComment = async (req, res, next) => {
   try {
     const commentId = req.params.id;
-    await Comments.deleteOne({ _id: commentId });
+    const comment = await Comments.findOne({ _id: commentId }).lean();
+    const userId = req.user?._id.toString();
+
+    console.log(commentId, comment, userId);
+
+    if (userId !== comment.userId.toString()) {
+      throw customError(400, "Failed to delete comment");
+    }
+
+    const allComments = await Comments.find({ itemId: comment.itemId }).lean();
+
+    const repliesMap = new Map();
+
+    allComments?.forEach((comment) => {
+      const repliedTo = comment.replyTo || null;
+      if (!repliesMap[repliedTo]) {
+        repliesMap[repliedTo] = [];
+      }
+
+      repliesMap[repliedTo].push(comment._id.toString());
+    });
+
+    const commentIdsToDelete = [];
+
+    const collectIds = (parentCommentId) => {
+      commentIdsToDelete.push(parentCommentId);
+      const replies = repliesMap[parentCommentId];
+      replies?.forEach((id) => collectIds(id));
+    };
+
+    collectIds(commentId);
+
+    console.log(commentIdsToDelete);
+    await Comments.deleteMany({ _id: { $in: commentIdsToDelete } });
+
     res.status(200).send({ message: "Comment deleted" });
   } catch (error) {
+    console.log(error);
     next(customError);
   }
 };
