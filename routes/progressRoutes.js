@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(verifyAuth);
 
 router.post("/", saveProgress);
-router.get("/roadmap-progress/:roadmapId ", getRoadmapProgresses);
+router.get("/roadmap-progress/:roadmapId", getRoadmapProgresses);
 router.get("/:itemId", getRoadmapItemProgress);
 router.put("/:id", updateProgress);
 

@@ -83,8 +83,6 @@ const deleteComment = async (req, res, next) => {
     const comment = await Comments.findOne({ _id: commentId }).lean();
     const userId = req.user?._id.toString();
 
-    console.log(commentId, comment, userId);
-
     if (userId !== comment.userId.toString()) {
       throw customError(400, "Failed to delete comment");
     }
@@ -112,12 +110,10 @@ const deleteComment = async (req, res, next) => {
 
     collectIds(commentId);
 
-    console.log(commentIdsToDelete);
     await Comments.deleteMany({ _id: { $in: commentIdsToDelete } });
 
     res.status(200).send({ message: "Comment deleted" });
   } catch (error) {
-    console.log(error);
     next(customError);
   }
 };

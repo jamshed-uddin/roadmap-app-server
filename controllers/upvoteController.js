@@ -12,15 +12,13 @@ const saveUpvote = async (req, res, next) => {
     const userId = req.user?._id;
     const { itemId } = req.body;
 
-    console.log(req.user);
-
     if (!itemId) {
       throw customError(400, "Item id is requried");
     }
     const roadmapItem = await RoadmapItems.findOne({ _id: itemId })
       .lean()
       .session(session);
-    console.log(roadmapItem);
+
     const newUpvote = { userId, itemId };
     await Upvotes.create([newUpvote], { session });
     await Roadmaps.updateOne(

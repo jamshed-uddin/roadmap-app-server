@@ -54,7 +54,6 @@ const getSingleRoadmap = async (req, res, next) => {
       return tree;
     };
 
-    console.log("roadmapItems", roadmapItems);
     const response = {
       ...roadmap,
       totalItems: roadmapItems?.length,

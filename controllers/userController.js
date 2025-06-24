@@ -17,8 +17,6 @@ const loginUser = async (req, res, next) => {
       throw customError(401, error.message);
     }
 
-    console.log(req.body, userCredentials);
-
     const user = await Users.findOne({ email: userCredentials.email });
 
     if (user && (await user.matchPassword(userCredentials.password))) {
@@ -79,7 +77,6 @@ const updateUser = async (req, res, next) => {
   try {
     const id = req.params.id;
     const { name } = req.body;
-    console.log(name);
 
     const user = await Users.findOne({ _id: id });
     if (!user) {
@@ -92,11 +89,8 @@ const updateUser = async (req, res, next) => {
       { new: true }
     ).lean();
 
-    // console.log({ ...updatedUser });
     const newUser = updatedUser;
     delete newUser.password;
-
-    console.log(newUser);
 
     res.status(200).send(newUser);
   } catch (error) {
@@ -110,8 +104,6 @@ const updateUser = async (req, res, next) => {
 const changePassword = async (req, res, next) => {
   try {
     const { userId, currentPassword, newPassword } = req.body;
-
-    console.log(req.body);
 
     if (!userId || !currentPassword || !newPassword) {
       throw customError(400, "Required field is missing");
@@ -128,7 +120,6 @@ const changePassword = async (req, res, next) => {
 
     res.status(200).send({ message: "Password changed." });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

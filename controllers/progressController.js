@@ -20,6 +20,7 @@ const saveProgress = async (req, res, next) => {
 const getRoadmapProgresses = async (req, res, next) => {
   try {
     const roadmapId = req.params.roadmapId;
+
     const userId = req.user?._id;
     const progresses = await Progresses.find({
       roadmapId: roadmapId,
@@ -38,16 +39,18 @@ const getRoadmapItemProgress = async (req, res, next) => {
     const userId = req.user?._id;
 
     const progress = await Progresses.findOne({ itemId, userId });
-    res.status(200).send(progress);
+
+    res.status(200).send({ progress: progress || {} });
   } catch (error) {
     next(error);
   }
 };
 
-const updateProgress = async (res, req, next) => {
+const updateProgress = async (req, res, next) => {
   try {
     const progressId = req.params.id;
     const { status } = req.body;
+
     if (status === "pending") {
       await Progresses.deleteOne({ _id: progressId });
       return res.status(200).send({ message: "Status updated" });
