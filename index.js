@@ -8,6 +8,7 @@ const roadmapRoutes = require("./routes/roadmapRoutes");
 const roadmapItemRoutes = require("./routes/roadmapItemRoutes");
 const upvoteRoutes = require("./routes/upvoteRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const progressRoutes = require("./routes/progressRoutes");
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 dotenv.config();
@@ -33,6 +34,7 @@ const startServer = async () => {
     app.use("/api/roadmapitems", roadmapItemRoutes);
     app.use("/api/upvotes", upvoteRoutes);
     app.use("/api/comments", commentRoutes);
+    app.use("/api/progresses", progressRoutes);
 
     app.use(notFound);
     app.use(errorHandler);
