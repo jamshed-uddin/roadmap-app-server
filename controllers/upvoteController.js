@@ -50,7 +50,6 @@ const getUpvotes = async (req, res, next) => {
     }
     const upvotes = await Upvotes.find({
       itemId: itemId,
-      userId: userId,
     }).lean();
 
     res.status(200).send(upvotes);

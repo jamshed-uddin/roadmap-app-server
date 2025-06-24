@@ -72,4 +72,97 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-module.exports = { loginUser, registerUser };
+//@desc update user
+// POST /api/users/:id
+// @access Private
+const updateUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const { name } = req.body;
+    console.log(name);
+
+    const user = await Users.findOne({ _id: id });
+    if (!user) {
+      throw customError(404, "User not found");
+    }
+
+    const updatedUser = await Users.findByIdAndUpdate(
+      { _id: id },
+      { name },
+      { new: true }
+    ).lean();
+
+    // console.log({ ...updatedUser });
+    const newUser = updatedUser;
+    delete newUser.password;
+
+    console.log(newUser);
+
+    res.status(200).send(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+//@desc update password
+// PUT /api/users/changepassword
+// @access Private
+const changePassword = async (req, res, next) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+
+    console.log(req.body);
+
+    if (!userId || !currentPassword || !newPassword) {
+      throw customError(400, "Required field is missing");
+    }
+
+    const user = await Users.findById({ _id: userId });
+
+    if (user && (await user.matchPassword(currentPassword))) {
+      user.password = newPassword;
+      await user.save();
+    } else {
+      throw customError(400, "Something went wrong.");
+    }
+
+    res.status(200).send({ message: "Password changed." });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+//@desc delete user
+// DELETE /api/users/:id
+// @access Private
+const deleteUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const { password } = req.body;
+
+    if (!userId || !password) {
+      throw customError(400, "Required field is missing.");
+    }
+
+    const user = await Users.findOne({ _id: userId });
+
+    if (user && (await user.matchPassword(password))) {
+      await Users.deleteOne({ email: userEmail });
+    } else {
+      throw customError(400, "Something went wrong");
+    }
+
+    res.status(200).send({ message: "User deleted." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  loginUser,
+  registerUser,
+  updateUser,
+  changePassword,
+  deleteUser,
+};
