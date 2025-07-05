@@ -8,8 +8,11 @@ const {
 const { verifyAuth } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.use(verifyAuth);
-router.route("/").post(createComment).get(getComments);
-router.route("/:id").put(updateComment).delete(deleteComment);
+router.get("/", getComments);
+router.post("/", verifyAuth, createComment);
+router
+  .route("/:id")
+  .put(verifyAuth, updateComment)
+  .delete(verifyAuth, deleteComment);
 
 module.exports = router;

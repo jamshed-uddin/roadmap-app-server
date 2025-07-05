@@ -3,9 +3,10 @@ const {
   getRoadmaps,
   getSingleRoadmap,
 } = require("../controllers/roadmapController");
+const { verifyAuth } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.get("/", getRoadmaps);
+router.get("/", verifyAuth, getRoadmaps);
 router.get("/:id", getSingleRoadmap);
 
 module.exports = router;

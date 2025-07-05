@@ -7,8 +7,8 @@ const {
 const { verifyAuth } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.use(verifyAuth);
-router.route("/").post(saveUpvote).get(getUpvotes);
-router.delete("/:id", deleteUpvotes);
+router.get("/", getUpvotes);
+router.post("/", verifyAuth, saveUpvote);
+router.delete("/:id", verifyAuth, deleteUpvotes);
 
 module.exports = router;

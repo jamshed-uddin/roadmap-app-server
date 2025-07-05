@@ -1,15 +1,99 @@
 const Roadmaps = require("../models/roadmapModel");
 const RoadmapItems = require("../models/roadmapItemModel");
+const Progresses = require("../models/progressModel");
 const customError = require("../utils/customError");
 
 const getRoadmaps = async (req, res, next) => {
   try {
     const userId = req.user?._id;
     const { popular, status } = req.query;
+    console.log(status);
 
-    // if(userId && status){
-    //todo: filter by status
-    // }
+    if (userId && status) {
+      const aggr = [
+        {
+          $match: {
+            userId,
+            status: {
+              $in: ["inProgress", "complete"],
+            },
+          },
+        },
+
+        {
+          $group: {
+            _id: "$roadmapId",
+            completedCount: {
+              $sum: {
+                $cond: [{ $eq: ["$status", "complete"] }, 1, 0],
+              },
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "roadmapitems",
+            localField: "_id",
+            foreignField: "roadmapId",
+            as: "roadmapItems",
+          },
+        },
+        {
+          $addFields: {
+            totalItems: { $size: "$roadmapItems" },
+          },
+        },
+        {
+          $addFields: {
+            userStatus: {
+              $cond: [
+                {
+                  $eq: ["$completedCount", "$totalItems"],
+                },
+                "complete",
+                "inProgress",
+              ],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "roadmaps",
+            localField: "_id",
+            foreignField: "_id",
+            as: "roadmap",
+          },
+        },
+        {
+          $unwind: "$roadmap",
+        },
+        {
+          $match: {
+            userStatus: status,
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: "$roadmap",
+          },
+        },
+      ];
+
+      if (popular) {
+        aggr.push({ $sort: { upvoteCount: -1 } });
+      }
+
+      aggr.push({
+        $project: {
+          _id: 1,
+          title: 1,
+        },
+      });
+
+      const filteredRoadmap = await Progresses.aggregate(aggr);
+      console.log(filteredRoadmap);
+      return res.status(200).send(filteredRoadmap);
+    }
 
     const sort = {};
 
@@ -18,7 +102,7 @@ const getRoadmaps = async (req, res, next) => {
     }
 
     const roadmaps = await Roadmaps.find({}).sort(sort).select("title");
-    res.status(200).json(roadmaps);
+    res.status(200).send(roadmaps);
   } catch (error) {
     next(error);
   }
@@ -33,7 +117,9 @@ const getSingleRoadmap = async (req, res, next) => {
       throw customError(404, "Roadmap not found");
     }
 
-    const roadmapItems = await RoadmapItems.find({ roadmapId: id }).lean();
+    const roadmapItems = await RoadmapItems.find({ roadmapId: id })
+      .sort({ createdAt: 1 })
+      .lean();
 
     const createRoadmapItemTree = (roamdapItemsArr) => {
       const itemMap = new Map();
@@ -59,7 +145,7 @@ const getSingleRoadmap = async (req, res, next) => {
       totalItems: roadmapItems?.length,
       items: createRoadmapItemTree(roadmapItems),
     };
-    res.send(response);
+    res.status(200).send(response);
   } catch (error) {
     next(error);
   }
