@@ -7,12 +7,10 @@ const verifyRoadmapRequest = async (req, res, next) => {
     const queryParams = req.url;
 
     let token;
-
     token = req.header("Authorization")?.split(" ")[1];
 
-    const decoded = jwt.verify(token, process.env.SECRET);
-
     if (queryParams.includes("status") && token) {
+      const decoded = jwt.verify(token, process.env.SECRET);
       const user = await Users.findById(decoded._id).select("-password");
       req.user = user;
     }
