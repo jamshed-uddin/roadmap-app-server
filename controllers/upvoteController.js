@@ -4,6 +4,10 @@ const RoadmapItems = require("../models/roadmapItemModel");
 const customError = require("../utils/customError");
 const { default: mongoose } = require("mongoose");
 
+// @desc save upvote
+// POST /api/upvotes
+// @access Private
+
 const saveUpvote = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -39,10 +43,14 @@ const saveUpvote = async (req, res, next) => {
   }
 };
 
+// @desc get upvotes
+// GET /api/upvotes
+// query params - itemId: string
+// @access Private
 const getUpvotes = async (req, res, next) => {
   try {
     const itemId = req.query.itemId;
-    const userId = req.user?._id;
+
     if (!itemId) {
       throw customError(400, "Item id is required");
     }
@@ -56,6 +64,9 @@ const getUpvotes = async (req, res, next) => {
   }
 };
 
+// @desc delete upvotes
+// DELETE /api/upvotes/:id
+// @access Private
 const deleteUpvotes = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();

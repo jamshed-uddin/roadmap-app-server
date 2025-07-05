@@ -37,7 +37,7 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-//@desc register user
+// @desc register user
 // POST /api/users/register
 // @access Public
 const registerUser = async (req, res, next) => {
@@ -70,8 +70,8 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-//@desc update user
-// POST /api/users/:id
+// @desc update user
+// PUT /api/users/:id
 // @access Private
 const updateUser = async (req, res, next) => {
   try {
@@ -98,7 +98,7 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-//@desc update password
+// @desc update password
 // PUT /api/users/changepassword
 // @access Private
 const changePassword = async (req, res, next) => {
@@ -124,7 +124,7 @@ const changePassword = async (req, res, next) => {
   }
 };
 
-//@desc delete user
+// @desc delete user
 // DELETE /api/users/:id
 // @access Private
 const deleteUser = async (req, res, next) => {

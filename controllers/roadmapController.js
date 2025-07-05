@@ -3,11 +3,13 @@ const RoadmapItems = require("../models/roadmapItemModel");
 const Progresses = require("../models/progressModel");
 const customError = require("../utils/customError");
 
+// @desc Get roadmaps
+// GET /api/roadmaps
+// @access Public
 const getRoadmaps = async (req, res, next) => {
   try {
     const userId = req.user?._id;
     const { popular, status } = req.query;
-    console.log(status);
 
     if (userId && status) {
       const aggr = [
@@ -91,7 +93,6 @@ const getRoadmaps = async (req, res, next) => {
       });
 
       const filteredRoadmap = await Progresses.aggregate(aggr);
-      console.log(filteredRoadmap);
       return res.status(200).send(filteredRoadmap);
     }
 
@@ -108,6 +109,9 @@ const getRoadmaps = async (req, res, next) => {
   }
 };
 
+// @desc Get a roadmaps
+// GET /api/roadmaps/:id
+// @access Public
 const getSingleRoadmap = async (req, res, next) => {
   try {
     const id = req.params.id;

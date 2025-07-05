@@ -19,6 +19,7 @@ const RoadmapItemSchema = new mongoose.Schema(
     roadmapId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Item's roadmap id is required"],
+      ref: "Roadmap",
     },
     subtopicTo: {
       type: mongoose.Schema.Types.ObjectId,

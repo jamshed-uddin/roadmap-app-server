@@ -1,15 +1,15 @@
 const RoadmapItems = require("../models/roadmapItemModel");
 
+// @desc Get a roadmap item
+// GET /api/roadmapitems/:id
+// @access Public
 const getRoadmapItem = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = req.user?._id;
 
-    if (userId) {
-      //todo: get progress status
-    }
-
-    const roadmapItem = await RoadmapItems.findById(id).lean();
+    const roadmapItem = await RoadmapItems.findById(id)
+      .populate("roadmapId", "title")
+      .lean();
 
     const response = {
       ...roadmapItem,

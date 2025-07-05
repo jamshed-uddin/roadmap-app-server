@@ -1,5 +1,9 @@
 const customError = require("../utils/customError");
 const Comments = require("../models/commentModel");
+
+// @desc create comment
+// POST /api/comments
+// @access Private
 const createComment = async (req, res, next) => {
   try {
     const { itemId, content, replyTo } = req.body;
@@ -16,6 +20,10 @@ const createComment = async (req, res, next) => {
   }
 };
 
+// @desc get comments
+// GET /api/comments
+// query params - item: string - item is itemId
+// @access Public
 const getComments = async (req, res, next) => {
   try {
     const itemId = req.query.item;
@@ -53,6 +61,9 @@ const getComments = async (req, res, next) => {
   }
 };
 
+// @desc edit comment
+// PUT /api/comments/:id
+// @access private
 const updateComment = async (req, res, next) => {
   try {
     const commentId = req.params.id;
@@ -77,6 +88,9 @@ const updateComment = async (req, res, next) => {
   }
 };
 
+// @desc delete comment
+// DELETE /api/comments/:id
+// @access private
 const deleteComment = async (req, res, next) => {
   try {
     const commentId = req.params.id;

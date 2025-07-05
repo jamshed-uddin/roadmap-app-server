@@ -1,6 +1,9 @@
 const Progresses = require("../models/progressModel");
 const customError = require("../utils/customError");
 
+// @desc save progress entry
+// POST /api/progresses
+// @access Private
 const saveProgress = async (req, res, next) => {
   try {
     const userId = req.user?._id;
@@ -17,6 +20,9 @@ const saveProgress = async (req, res, next) => {
   }
 };
 
+// @desc get roadmap progress record
+// GET /api/progresses/roadmap-progress/:roadmapId
+// @access Private
 const getRoadmapProgresses = async (req, res, next) => {
   try {
     const roadmapId = req.params.roadmapId;
@@ -33,6 +39,9 @@ const getRoadmapProgresses = async (req, res, next) => {
   }
 };
 
+// @desc get roadmap item progress record
+// GET /api/progresses/:itemId  (item id here is the roadmap item id)
+// @access Private
 const getRoadmapItemProgress = async (req, res, next) => {
   try {
     const itemId = req.params.itemId;
@@ -46,6 +55,9 @@ const getRoadmapItemProgress = async (req, res, next) => {
   }
 };
 
+// @desc update progress status
+// GET /api/progresses/:id
+// @access Private
 const updateProgress = async (req, res, next) => {
   try {
     const progressId = req.params.id;
